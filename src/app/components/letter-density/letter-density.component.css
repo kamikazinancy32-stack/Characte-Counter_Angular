@@ -1,0 +1,68 @@
+:host {
+  display: block;
+}
+
+.density {
+  margin-top: 24px;
+}
+
+.density h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -1px;
+}
+
+.density-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.density-row {
+  display: grid;
+  grid-template-columns: 16px 1fr 88px;
+  align-items: center;
+  gap: 14px;
+}
+
+.density-bar {
+  height: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--surface);
+}
+
+.density-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--purple-400);
+}
+
+.density-value {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.see-more {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  font-size: 20px;
+  line-height: 1.4;
+}
+
+.see-more:hover {
+  opacity: 0.8;
+}
+
+.see-more svg {
+  transition: transform 0.2s ease;
+}
+
+.see-more[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}

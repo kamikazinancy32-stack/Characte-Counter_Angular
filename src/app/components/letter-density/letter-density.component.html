@@ -1,1 +1,41 @@
-<p>letter-density works!</p>
+<section class="density" aria-labelledby="density-title">
+  <h2 id="density-title">Letter Density</h2>
+
+  <p class="density-empty" [hidden]="hasLetters">
+    No characters found. Start typing to see letter density.
+  </p>
+
+  <ul class="density-list" id="density-list">
+    @for (item of visibleCounts; track item.letter) {
+      <li class="density-row">
+        <span>{{ item.letter }}</span>
+        <span class="density-bar" aria-hidden="true">
+          <span class="density-fill" [style.width.%]="item.percentage"></span>
+        </span>
+        <span class="density-value">{{ item.count }} ({{ item.percentage }}%)</span>
+      </li>
+    }
+  </ul>
+
+  <button
+    type="button"
+    class="see-more"
+    id="see-more"
+    aria-controls="density-list"
+    [attr.aria-expanded]="showAll"
+    [hidden]="!canExpand"
+    (click)="toggleShowAll()"
+  >
+    <span>{{ showAll ? 'See less' : 'See more' }}</span>
+    <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+      <path
+        d="M2.5 4.5 6 8l3.5-3.5"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </button>
+</section>
