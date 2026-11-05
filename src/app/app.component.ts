@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { HeaderComponent, Theme } from './components/header/header.component';
 import { SettingsComponent } from './components/settings/settings.component';
+import { StatsCardsComponent } from './components/stats-cards/stats-cards.component';
 import { TextInputComponent } from './components/text-input/text-input.component';
 import { debugLog } from './debug';
 import { countWords, formatReadingTime } from './text-stats';
@@ -19,7 +20,7 @@ const LIGHT_SCHEME_QUERY = '(prefers-color-scheme: light)';
  */
 @Component({
   selector: 'app-root',
-  imports: [HeaderComponent, TextInputComponent, SettingsComponent],
+  imports: [HeaderComponent, TextInputComponent, SettingsComponent, StatsCardsComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })

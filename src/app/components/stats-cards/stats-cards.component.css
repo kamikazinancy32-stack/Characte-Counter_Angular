@@ -1,0 +1,73 @@
+:host {
+  display: block;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 48px;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  height: 150px;
+  padding: 0 16px;
+  border-radius: 12px;
+  background-repeat: no-repeat;
+  background-position: right center;
+  color: var(--neutral-900);
+}
+
+.stat-card-characters {
+  background-color: var(--purple-400);
+  background-image: url("/images/pattern-characters.svg");
+}
+
+.stat-card-words {
+  background-color: var(--yellow-500);
+  background-image: url("/images/pattern-words.svg");
+}
+
+.stat-card-sentences {
+  background-color: var(--orange-500);
+  background-image: url("/images/pattern-sentences.svg");
+}
+
+.stat-number {
+  font-size: 64px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.stat-label {
+  font-size: 20px;
+  line-height: 1.4;
+}
+
+.stat-note {
+  font-size: 16px;
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 767px) {
+  .stats {
+    grid-template-columns: 1fr;
+    margin-top: 40px;
+  }
+
+  .stat-card {
+    height: 130px;
+    padding: 0 20px;
+    background-position: right -20px center;
+  }
+
+  .stat-number {
+    font-size: 40px;
+  }
+}

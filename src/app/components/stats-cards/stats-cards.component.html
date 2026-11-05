@@ -1,1 +1,20 @@
-<p>stats-cards works!</p>
+<section aria-label="Text statistics">
+  <ul class="stats" aria-live="polite">
+    <li class="stat-card stat-card-characters">
+      <p class="stat-number">{{ characterCount }}</p>
+      <p class="stat-label">
+        Total Characters<span class="stat-note" [hidden]="!excludeSpaces"> (no space)</span>
+      </p>
+    </li>
+
+    <li class="stat-card stat-card-words">
+      <p class="stat-number">{{ wordCount }}</p>
+      <p class="stat-label">Word Count</p>
+    </li>
+
+    <li class="stat-card stat-card-sentences">
+      <p class="stat-number">{{ sentenceCount }}</p>
+      <p class="stat-label">Sentence Count</p>
+    </li>
+  </ul>
+</section>
