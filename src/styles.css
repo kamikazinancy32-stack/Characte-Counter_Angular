@@ -1,1 +1,146 @@
-/* You can add global styles to this file, and also import other style files */
+/*
+ * Global styles: design tokens, theme variables and base element rules.
+ * Values are copied from the vanilla JS reference (Reference/style.css).
+ * Component-specific rules live in each component's own .css file.
+ */
+
+/* ---------- Colours ---------- */
+
+:root {
+  --neutral-900: #12131a;
+  --neutral-800: #21222c;
+  --neutral-700: #2a2b37;
+  --neutral-600: #404254;
+  --neutral-200: #e4e4ef;
+  --neutral-100: #f2f2f7;
+  --neutral-0: #ffffff;
+  --purple-400: #d3a0fa;
+  --purple-500: #c27cf8;
+  --yellow-500: #ff9f00;
+  --orange-500: #fe8159;
+  --orange-800: #da3701;
+
+  /* Dark theme (default) */
+  --page-background: var(--neutral-900) url("/images/bg-dark-theme.png") center top / cover;
+  --text: var(--neutral-200);
+  --heading: var(--neutral-100);
+  --surface: var(--neutral-800);
+  --surface-border: var(--neutral-700);
+  --button-background: var(--neutral-700);
+  --control-border: var(--neutral-200);
+  --warning: var(--orange-500);
+}
+
+/* Light theme: AppComponent toggles this class on <html>. */
+:root.light-theme {
+  --page-background: var(--neutral-0);
+  --text: var(--neutral-900);
+  --heading: var(--neutral-900);
+  --surface: var(--neutral-100);
+  --surface-border: var(--neutral-200);
+  --button-background: var(--neutral-100);
+  --control-border: var(--neutral-600);
+  --warning: var(--orange-800);
+}
+
+/* ---------- Base ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--page-background);
+  color: var(--text);
+  font-family: "DM Sans", sans-serif;
+  font-size: 16px;
+  line-height: 1.3;
+  letter-spacing: -0.6px;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+}
+
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* ---------- Cursors ---------- */
+
+a[href],
+button,
+label,
+select,
+summary,
+[role="button"],
+input[type="checkbox"],
+input[type="radio"] {
+  cursor: pointer;
+}
+
+textarea,
+input[type="text"],
+input[type="number"],
+input[type="search"],
+input[type="email"] {
+  cursor: text;
+}
+
+button:disabled,
+input:disabled,
+textarea:disabled,
+[aria-disabled="true"],
+label:has(:disabled) {
+  cursor: not-allowed;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+ul {
+  list-style: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--purple-500);
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- Accessibility preferences ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}

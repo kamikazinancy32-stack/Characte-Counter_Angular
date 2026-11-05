@@ -1,0 +1,17 @@
+<header class="header">
+  <a href="/" class="logo" aria-label="Character Counter, home">
+    <img src="images/logo.svg" alt="" width="33" height="40" />
+    <span>Character Counter</span>
+  </a>
+
+  <!-- A toggle button keeps a fixed label; aria-pressed tells screen readers whether light theme is on. -->
+  <button
+    class="theme-toggle"
+    type="button"
+    aria-label="Light theme"
+    [attr.aria-pressed]="isLight"
+    (click)="onToggleClick()"
+  >
+    <img [src]="iconSrc" alt="" />
+  </button>
+</header>
