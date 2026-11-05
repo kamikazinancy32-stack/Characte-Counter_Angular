@@ -1,59 +1,126 @@
-# CharacterCounter
+# Character Counter (Angular)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.29.
+AmaliTech lab: **Component Interaction & Lifecycle**. A real-time text analyser built
+with Angular standalone components, using `@Input()` / `@Output()` for all
+parent–child communication and lifecycle hooks for every calculation.
 
-## Development server
+## Features
 
-To start a local development server, run:
+- Live character, word and sentence counts (two-digit cards, e.g. `07`)
+- **Exclude Spaces** option, with "(no space)" shown on the character card
+- **Set Character Limit**: when the text goes over the limit, the textarea border turns orange and
+  _"Limit reached! Your text exceeds X characters."_ appears
+- Approximate reading time at 200 words per minute (`<1 minute`, `1 minute`, `X minutes`)
+- Letter density: frequency and percentage of each letter A–Z, sorted, top 5 with
+  **See more / See less**, and an empty-state message when there is no text
+- Light and dark themes: the first visit follows the OS setting (`prefers-color-scheme`);
+  a manual choice is saved in `localStorage`
+- Responsive layout (mobile < 768px, tablet, desktop up to 990px wide)
+- Accessible: keyboard navigable, visible `:focus-visible` outlines, labelled controls,
+  `aria-live="polite"` on the warning, stats and reading time, `aria-pressed` on the theme
+  toggle, `aria-expanded` on See more
 
-```bash
-ng serve
+## Component tree and data flow
+
+`AppComponent` is the only place where state lives (`text`, `excludeSpaces`,
+`limitEnabled`, `limit`, `theme`). Data flows **down** through `@Input()` bindings;
+user actions flow **up** as `@Output()` `EventEmitter` events. Children never change
+the parent's state. They emit, the parent's handler updates its state, and Angular
+pushes the new values back down.
+
+```text
+AppComponent  (state: text, excludeSpaces, limitEnabled, limit, theme; derived: readingTime)
+│
+├── HeaderComponent
+│     @Input   theme           ◄── theme
+│     @Output  themeToggle     ──► onThemeToggle()
+│
+├── TextInputComponent
+│     @Input   text            ◄── text
+│     @Input   limit           ◄── limit
+│     @Input   limitEnabled    ◄── limitEnabled
+│     @Input   excludeSpaces   ◄── excludeSpaces   (limit is checked against the displayed count)
+│     @Output  textChange      ──► onTextChange($event)
+│
+├── SettingsComponent
+│     @Input   excludeSpaces   ◄── excludeSpaces
+│     @Input   limitEnabled    ◄── limitEnabled
+│     @Input   limit           ◄── limit
+│     @Input   readingTime     ◄── readingTime
+│     @Output  excludeSpacesChange ──► onExcludeSpacesChange($event)
+│     @Output  limitEnabledChange  ──► onLimitEnabledChange($event)
+│     @Output  limitChange         ──► onLimitChange($event)
+│
+├── StatsCardsComponent
+│     @Input   text            ◄── text
+│     @Input   excludeSpaces   ◄── excludeSpaces
+│
+└── LetterDensityComponent
+      @Input   text            ◄── text
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Example round trip: you type in the textarea → `TextInputComponent` emits `textChange`
+→ `AppComponent.onTextChange()` sets `text` → Angular sends the new `text` to
+TextInput, StatsCards and LetterDensity, and the new `readingTime` to Settings.
 
-## Code scaffolding
+## Lifecycle hooks
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+| Component                | Hook          | Why it is used |
+| ------------------------ | ------------- | -------------- |
+| `AppComponent`           | `ngOnInit`    | Loads the saved theme from `localStorage`, or falls back to `prefers-color-scheme`, and starts listening for OS theme changes. |
+| `AppComponent`           | `ngOnDestroy` | Removes the `matchMedia` `change` listener so it cannot leak. |
+| `TextInputComponent`     | `ngOnChanges` | Re-checks whether the text exceeds the limit whenever `text`, `limit`, `limitEnabled` or `excludeSpaces` changes, and shows or hides the warning. |
+| `StatsCardsComponent`    | `ngOnChanges` | Uses `SimpleChanges` to recount only what is affected: `text` → characters, words, sentences; `excludeSpaces` → characters only. |
+| `LetterDensityComponent` | `ngOnInit`    | Builds the first density list once the initial input is set. |
+| `LetterDensityComponent` | `ngOnChanges` | Rebuilds the list on later `text` changes (skips `firstChange`, which `ngOnInit` covers). |
 
-```bash
-ng generate component component-name
+### Seeing change detection in the console
+
+Every hook logs to the browser console while `DEBUG` is `true` in
+[`src/app/debug.ts`](src/app/debug.ts). For example, changing only the limit logs
+
+```text
+[TextInput] ngOnChanges: limit
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+and no other component, because no other component receives `limit`. Set `DEBUG = false`
+to silence the logs.
 
-```bash
-ng generate --help
+## Project structure
+
+```text
+src/
+├── index.html                 DM Sans font, page title
+├── styles.css                 design tokens, light/dark theme variables, base rules
+└── app/
+    ├── app.component.*        parent: state, event handlers, theme hooks
+    ├── text-stats.ts          pure counting functions (characters, words, sentences, reading time, density)
+    ├── debug.ts               DEBUG flag and lifecycle logger
+    └── components/
+        ├── header/
+        ├── text-input/
+        ├── settings/
+        ├── stats-cards/
+        └── letter-density/
+public/images/                 logo, theme icons, card patterns, dark background
 ```
 
-## Building
+The theme colours are CSS custom properties on `:root`. `AppComponent` toggles the
+`light-theme` class on `<html>` to switch the whole palette.
 
-To build the project run:
+## Running it
 
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Requirements: Node.js 20.19+, 22.12+ or 24+, and npm.
 
 ```bash
-ng test
+npm install
+npm start          # same as: ng serve
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+Open http://localhost:4200/. To make a production build:
 
 ```bash
-ng e2e
+npm run build      # output in dist/character-counter
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Built with Angular 21 (standalone components, plain CSS, no SSR).
