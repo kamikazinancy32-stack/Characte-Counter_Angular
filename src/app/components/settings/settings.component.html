@@ -1,1 +1,43 @@
-<p>settings works!</p>
+<div class="options">
+  <div class="option-group">
+    <label class="checkbox">
+      <input
+        type="checkbox"
+        id="exclude-spaces"
+        [checked]="excludeSpaces"
+        (change)="onExcludeSpacesChange($event)"
+      />
+      Exclude Spaces
+    </label>
+
+    <div class="limit-option">
+      <label class="checkbox">
+        <input
+          type="checkbox"
+          id="limit-toggle"
+          aria-controls="character-limit"
+          [checked]="limitEnabled"
+          (change)="onLimitEnabledChange($event)"
+        />
+        Set Character Limit
+      </label>
+
+      <label for="character-limit" class="visually-hidden">Character limit</label>
+      <input
+        #limitInput
+        type="number"
+        id="character-limit"
+        class="limit-input"
+        min="1"
+        inputmode="numeric"
+        [disabled]="!limitEnabled"
+        [value]="limit ?? ''"
+        (input)="onLimitInput($event)"
+      />
+    </div>
+  </div>
+
+  <p class="reading-time" aria-live="polite">
+    Approx. reading time: <span>{{ readingTime }}</span>
+  </p>
+</div>

@@ -1,7 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { HeaderComponent, Theme } from './components/header/header.component';
+import { SettingsComponent } from './components/settings/settings.component';
+import { TextInputComponent } from './components/text-input/text-input.component';
 import { debugLog } from './debug';
+import { countWords, formatReadingTime } from './text-stats';
 
 const THEME_STORAGE_KEY = 'character-counter-theme';
 const LIGHT_SCHEME_QUERY = '(prefers-color-scheme: light)';
@@ -16,12 +19,22 @@ const LIGHT_SCHEME_QUERY = '(prefers-color-scheme: light)';
  */
 @Component({
   selector: 'app-root',
-  imports: [HeaderComponent],
+  imports: [HeaderComponent, TextInputComponent, SettingsComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
 export class AppComponent implements OnInit, OnDestroy {
+  // ---------- Application state (only changed by the handlers below) ----------
+  text = '';
+  excludeSpaces = false;
+  limitEnabled = false;
+  limit: number | null = null;
   theme: Theme = 'dark';
+
+  /** Derived from text, so it is computed rather than stored. */
+  get readingTime(): string {
+    return formatReadingTime(countWords(this.text));
+  }
 
   private colorSchemeQuery?: MediaQueryList;
 
@@ -42,6 +55,22 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   // ---------- Event handlers (children -> parent) ----------
+
+  onTextChange(text: string): void {
+    this.text = text;
+  }
+
+  onExcludeSpacesChange(excludeSpaces: boolean): void {
+    this.excludeSpaces = excludeSpaces;
+  }
+
+  onLimitEnabledChange(limitEnabled: boolean): void {
+    this.limitEnabled = limitEnabled;
+  }
+
+  onLimitChange(limit: number | null): void {
+    this.limit = limit;
+  }
 
   onThemeToggle(): void {
     const nextTheme: Theme = this.theme === 'dark' ? 'light' : 'dark';

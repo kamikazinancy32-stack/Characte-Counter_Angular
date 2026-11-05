@@ -1,8 +1,31 @@
+<!--
+  Data flow: [inputs] carry AppComponent state down to the children,
+  (outputs) carry user events back up to the handlers in app.component.ts.
+-->
 <div class="container">
-  <!-- theme flows down; themeToggle bubbles up to the parent -->
   <app-header [theme]="theme" (themeToggle)="onThemeToggle()" />
 
   <main>
     <h1>Analyze your text in real-time.</h1>
+
+    <section class="text-area" aria-label="Text input">
+      <app-text-input
+        [text]="text"
+        [limit]="limit"
+        [limitEnabled]="limitEnabled"
+        [excludeSpaces]="excludeSpaces"
+        (textChange)="onTextChange($event)"
+      />
+
+      <app-settings
+        [excludeSpaces]="excludeSpaces"
+        [limitEnabled]="limitEnabled"
+        [limit]="limit"
+        [readingTime]="readingTime"
+        (excludeSpacesChange)="onExcludeSpacesChange($event)"
+        (limitEnabledChange)="onLimitEnabledChange($event)"
+        (limitChange)="onLimitChange($event)"
+      />
+    </section>
   </main>
 </div>
