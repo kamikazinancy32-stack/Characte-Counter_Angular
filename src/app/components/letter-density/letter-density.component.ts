@@ -1,4 +1,11 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 
 import { debugLog } from '../../debug';
 import { LetterCount, getLetterDensity } from '../../text-stats';
@@ -15,6 +22,9 @@ const LETTERS_SHOWN = 5;
   selector: 'app-letter-density',
   templateUrl: './letter-density.component.html',
   styleUrl: './letter-density.component.css',
+  // OnPush: only re-check this component when one of its @Inputs gets a new value
+  // or one of its own template events fires (it depends on nothing else).
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LetterDensityComponent implements OnInit, OnChanges {
   @Input({ required: true }) text = '';

@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 
 import { debugLog } from '../../debug';
 import { countCharacters } from '../../text-stats';
@@ -13,6 +21,9 @@ import { countCharacters } from '../../text-stats';
   selector: 'app-text-input',
   templateUrl: './text-input.component.html',
   styleUrl: './text-input.component.css',
+  // OnPush: only re-check this component when one of its @Inputs gets a new value
+  // or one of its own template events fires (it depends on nothing else).
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TextInputComponent implements OnChanges {
   @Input({ required: true }) text = '';

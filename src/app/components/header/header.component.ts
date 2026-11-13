@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 
 export type Theme = 'dark' | 'light';
 
@@ -11,6 +11,9 @@ export type Theme = 'dark' | 'light';
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
+  // OnPush: only re-check this component when one of its @Inputs gets a new value
+  // or one of its own template events fires (it depends on nothing else).
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
   @Input({ required: true }) theme: Theme = 'dark';

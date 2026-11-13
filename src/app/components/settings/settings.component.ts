@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Injector,
@@ -18,6 +19,9 @@ import {
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.css',
+  // OnPush: only re-check this component when one of its @Inputs gets a new value
+  // or one of its own template events fires (it depends on nothing else).
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsComponent {
   @Input() excludeSpaces = false;

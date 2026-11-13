@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 import { debugLog } from '../../debug';
 import { countCharacters, countSentences, countWords, formatCount } from '../../text-stats';
@@ -12,6 +12,9 @@ import { countCharacters, countSentences, countWords, formatCount } from '../../
   selector: 'app-stats-cards',
   templateUrl: './stats-cards.component.html',
   styleUrl: './stats-cards.component.css',
+  // OnPush: only re-check this component when one of its @Inputs gets a new value
+  // or one of its own template events fires (it depends on nothing else).
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StatsCardsComponent implements OnChanges {
   @Input({ required: true }) text = '';
