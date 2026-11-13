@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 
-import { changedInputs, debugLog } from '../../debug';
+import { debugLog } from '../../debug';
 import { countCharacters } from '../../text-stats';
 
 /**
@@ -28,7 +28,7 @@ export class TextInputComponent implements OnChanges {
 
   /** Re-checks the limit whenever the text, the limit or the counting mode changes. */
   ngOnChanges(changes: SimpleChanges): void {
-    debugLog('[TextInput] ngOnChanges:', changedInputs(changes));
+    debugLog('[TextInput] ngOnChanges: ' + Object.keys(changes).join(', '));
 
     this.isOverLimit = this.exceedsLimit();
     this.warningMessage = this.isOverLimit
@@ -41,9 +41,10 @@ export class TextInputComponent implements OnChanges {
   }
 
   private exceedsLimit(): boolean {
-    const limit = this.limit ?? 0;
-    return (
-      this.limitEnabled && limit > 0 && countCharacters(this.text, this.excludeSpaces) > limit
-    );
+    // No warning when the limit is off, empty, or not a positive number.
+    if (!this.limitEnabled || this.limit === null || this.limit <= 0) {
+      return false;
+    }
+    return countCharacters(this.text, this.excludeSpaces) > this.limit;
   }
 }

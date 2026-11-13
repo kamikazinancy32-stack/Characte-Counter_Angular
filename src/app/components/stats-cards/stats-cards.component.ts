@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 
-import { changedInputs, debugLog } from '../../debug';
+import { debugLog } from '../../debug';
 import { countCharacters, countSentences, countWords, formatCount } from '../../text-stats';
 
 /**
@@ -26,7 +26,7 @@ export class StatsCardsComponent implements OnChanges {
    * - excludeSpaces only affects the character count.
    */
   ngOnChanges(changes: SimpleChanges): void {
-    debugLog('[StatsCards] ngOnChanges:', changedInputs(changes));
+    debugLog('[StatsCards] ngOnChanges: ' + Object.keys(changes).join(', '));
 
     if (changes['text'] || changes['excludeSpaces']) {
       this.characterCount = formatCount(countCharacters(this.text, this.excludeSpaces));

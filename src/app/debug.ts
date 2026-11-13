@@ -5,13 +5,9 @@
  */
 export const DEBUG = true;
 
-export function debugLog(...messages: unknown[]): void {
+/** Writes a message to the console, but only when DEBUG is true. */
+export function debugLog(message: string): void {
   if (DEBUG) {
-    console.log(...messages);
+    console.log(message);
   }
-}
-
-/** Lists which @Input()s changed in a SimpleChanges object, e.g. "text, excludeSpaces". */
-export function changedInputs(changes: object): string {
-  return Object.keys(changes).join(', ');
 }

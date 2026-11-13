@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 
-import { changedInputs, debugLog } from '../../debug';
+import { debugLog } from '../../debug';
 import { LetterCount, getLetterDensity } from '../../text-stats';
 
 const LETTERS_SHOWN = 5;
@@ -41,7 +41,7 @@ export class LetterDensityComponent implements OnInit, OnChanges {
 
   /** Rebuilds the list on later text changes (the first one is covered by ngOnInit). */
   ngOnChanges(changes: SimpleChanges): void {
-    debugLog('[LetterDensity] ngOnChanges:', changedInputs(changes));
+    debugLog('[LetterDensity] ngOnChanges: ' + Object.keys(changes).join(', '));
 
     const textChange = changes['text'];
     if (textChange && !textChange.firstChange) {
