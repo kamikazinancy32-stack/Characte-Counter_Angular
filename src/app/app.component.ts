@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 
 import { HeaderComponent, Theme } from './components/header/header.component';
 import { LetterDensityComponent } from './components/letter-density/letter-density.component';
@@ -9,15 +9,14 @@ import { debugLog } from './debug';
 import { countWords, formatReadingTime } from './text-stats';
 
 const THEME_STORAGE_KEY = 'character-counter-theme';
-const LIGHT_SCHEME_QUERY = '(prefers-color-scheme: light)';
 
 /**
- * Parent component and single source of truth.
- *
- * Data flow: every piece of state lives here and flows DOWN to the children
- * through @Input() bindings. Children never change it; they emit @Output()
- * events and the handlers below update the state, which Angular then pushes
- * back down to the children.
+ * PARENT component: the single source of truth for the whole app.
+ * Receives: nothing (it is the root).
+ * Sends DOWN: text, excludeSpaces, limitEnabled, limit, theme, readingTime (@Input bindings).
+ * Listens UP: textChange, excludeSpacesChange, limitEnabledChange, limitChange, themeToggle
+ * (@Output events). Children never change this state; they emit, the handlers
+ * below update it, and Angular pushes the new values back down.
  */
 @Component({
   selector: 'app-root',
@@ -44,22 +43,28 @@ export class AppComponent implements OnInit, OnDestroy {
     return formatReadingTime(countWords(this.text));
   }
 
-  private colorSchemeQuery?: MediaQueryList;
+  /** Tells us whether the operating system is set to light mode. */
+  private lightSchemeQuery = window.matchMedia('(prefers-color-scheme: light)');
+  private changeDetector = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
     debugLog('[App] ngOnInit: loading theme');
 
     // Use the saved theme if there is one, otherwise follow the OS setting.
-    this.colorSchemeQuery = window.matchMedia(LIGHT_SCHEME_QUERY);
-    this.setTheme(this.readSavedTheme() ?? this.systemTheme());
+    const savedTheme = this.readSavedTheme();
+    if (savedTheme) {
+      this.setTheme(savedTheme);
+    } else {
+      this.setTheme(this.lightSchemeQuery.matches ? 'light' : 'dark');
+    }
 
     // Keep following OS theme changes until the user picks a theme themselves.
-    this.colorSchemeQuery.addEventListener('change', this.onSystemThemeChange);
+    this.lightSchemeQuery.addEventListener('change', this.onSystemThemeChange);
   }
 
   ngOnDestroy(): void {
     debugLog('[App] ngOnDestroy: removing prefers-color-scheme listener');
-    this.colorSchemeQuery?.removeEventListener('change', this.onSystemThemeChange);
+    this.lightSchemeQuery.removeEventListener('change', this.onSystemThemeChange);
   }
 
   // ---------- Event handlers (children -> parent) ----------
@@ -88,10 +93,13 @@ export class AppComponent implements OnInit, OnDestroy {
 
   // ---------- Theme helpers ----------
 
-  /** Arrow function so the same reference can be added and removed as a listener. */
+  /** Arrow function so the same function can be added and removed as a listener. */
   private onSystemThemeChange = (event: MediaQueryListEvent): void => {
     if (this.readSavedTheme() === null) {
       this.setTheme(event.matches ? 'light' : 'dark');
+      // This listener is not a template event, so Angular does not know the state
+      // changed. markForCheck() asks it to run change detection and update the header.
+      this.changeDetector.markForCheck();
     }
   };
 
@@ -101,14 +109,13 @@ export class AppComponent implements OnInit, OnDestroy {
     document.documentElement.classList.toggle('light-theme', theme === 'light');
   }
 
-  private systemTheme(): Theme {
-    return this.colorSchemeQuery?.matches ? 'light' : 'dark';
-  }
-
   private readSavedTheme(): Theme | null {
     try {
       const saved = localStorage.getItem(THEME_STORAGE_KEY);
-      return saved === 'light' || saved === 'dark' ? saved : null;
+      if (saved === 'light' || saved === 'dark') {
+        return saved;
+      }
+      return null;
     } catch {
       return null; // Storage can be blocked (e.g. some private modes).
     }
