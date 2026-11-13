@@ -20,7 +20,21 @@ parent–child communication and lifecycle hooks for every calculation.
   `aria-live="polite"` on the warning, stats and reading time, `aria-pressed` on the theme
   toggle, `aria-expanded` on See more
 
-## Component tree and data flow
+## Component hierarchy
+
+```text
+AppComponent               (parent: owns all the state)
+├── HeaderComponent        (child)
+├── TextInputComponent     (child)
+├── SettingsComponent      (child)
+├── StatsCardsComponent    (child)
+└── LetterDensityComponent (child)
+```
+
+The **parent** (`AppComponent`) owns the state. The **children** only display the data
+they receive through `@Input()`, or report what the user did through `@Output()` events.
+
+## Data flow: inputs and outputs
 
 `AppComponent` is the only place where state lives (`text`, `excludeSpaces`,
 `limitEnabled`, `limit`, `theme`). Data flows **down** through `@Input()` bindings;
@@ -65,26 +79,56 @@ TextInput, StatsCards and LetterDensity, and the new `readingTime` to Settings.
 
 ## Lifecycle hooks
 
-| Component                | Hook          | Why it is used |
-| ------------------------ | ------------- | -------------- |
-| `AppComponent`           | `ngOnInit`    | Loads the saved theme from `localStorage`, or falls back to `prefers-color-scheme`, and starts listening for OS theme changes. |
-| `AppComponent`           | `ngOnDestroy` | Removes the `matchMedia` `change` listener so it cannot leak. |
-| `TextInputComponent`     | `ngOnChanges` | Re-checks whether the text exceeds the limit whenever `text`, `limit`, `limitEnabled` or `excludeSpaces` changes, and shows or hides the warning. |
-| `StatsCardsComponent`    | `ngOnChanges` | Uses `SimpleChanges` to recount only what is affected: `text` → characters, words, sentences; `excludeSpaces` → characters only. |
-| `LetterDensityComponent` | `ngOnInit`    | Builds the first density list once the initial input is set. |
-| `LetterDensityComponent` | `ngOnChanges` | Rebuilds the list on later `text` changes (skips `firstChange`, which `ngOnInit` covers). |
+| Hook          | Component                | What it does | When it runs |
+| ------------- | ------------------------ | ------------ | ------------ |
+| `ngOnInit`    | `AppComponent`           | Loads the saved theme from `localStorage` (or follows the OS setting) and starts listening for OS theme changes. | Once, when the app starts. |
+| `ngOnDestroy` | `AppComponent`           | Removes the OS theme listener so it does not leak. | Once, when the component is destroyed (for example when the app is torn down). |
+| `ngOnChanges` | `TextInputComponent`     | Re-checks whether the text is over the limit and shows or hides the warning. | Before `ngOnInit`, then every time `text`, `limit`, `limitEnabled` or `excludeSpaces` gets a new value. |
+| `ngOnChanges` | `StatsCardsComponent`    | Recounts only what is affected: `text` → all three counts, `excludeSpaces` → characters only. | Before `ngOnInit`, then every time `text` or `excludeSpaces` gets a new value. |
+| `ngOnInit`    | `LetterDensityComponent` | Builds the first letter density list. | Once, after the first `ngOnChanges`. |
+| `ngOnChanges` | `LetterDensityComponent` | Rebuilds the list when the text changes (skips the first change, which `ngOnInit` covers). | Every time `text` gets a new value. |
 
-### Seeing change detection in the console
+Every hook writes a line to the browser console while `DEBUG` is `true` in
+[`src/app/debug.ts`](src/app/debug.ts). Set it to `false` to silence the logs.
 
-Every hook logs to the browser console while `DEBUG` is `true` in
-[`src/app/debug.ts`](src/app/debug.ts). For example, changing only the limit logs
+## Change detection
 
-```text
-[TextInput] ngOnChanges: limit
-```
+**What starts it.** Change detection runs after something happens in the page, mostly
+user events such as typing in the textarea or clicking a checkbox or button. This app is
+"zoneless" (the Angular 21 default), so Angular starts it after events handled in a
+template, like `(input)` and `(click)`. The one place that changes state outside a
+template event, the OS theme listener in `AppComponent`, calls `markForCheck()` to ask
+Angular to update the page.
 
-and no other component, because no other component receives `limit`. Set `DEBUG = false`
-to silence the logs.
+**What it does.** Angular walks the component tree from the top, compares each binding
+(`{{ ... }}`, `[value]`, `[text]`, ...) with its previous value, and updates only
+the parts of the page that changed.
+
+**When `ngOnChanges` runs.** Only when a parent passes a **new** value to an `@Input()`.
+If the value is the same, the child's `ngOnChanges` does not run.
+
+**OnPush.** The five child components use `ChangeDetectionStrategy.OnPush`. They only
+depend on their `@Input()`s, so Angular can skip checking them unless one of their inputs
+gets a new value or one of their own template events (like the See more button) fires.
+
+**How to see it.**
+
+1. Keep `DEBUG = true` in [`src/app/debug.ts`](src/app/debug.ts), run the app and open
+   the browser DevTools **Console**.
+2. Type one letter. Three components log, because all three receive `text`:
+
+   ```text
+   [TextInput] ngOnChanges: text
+   [StatsCards] ngOnChanges: text
+   [LetterDensity] ngOnChanges: text
+   ```
+
+3. Tick "Set Character Limit" and change only the limit number. Only TextInput logs,
+   because it is the only component that receives `limit`:
+
+   ```text
+   [TextInput] ngOnChanges: limit
+   ```
 
 ## Project structure
 
@@ -120,7 +164,7 @@ npm start          # same as: ng serve
 Open http://localhost:4200/. To make a production build:
 
 ```bash
-npm run build      # output in dist/character-counter
+npm run build      # output in dist/character-counter/browser
 ```
 
 Built with Angular 21 (standalone components, plain CSS, no SSR).
