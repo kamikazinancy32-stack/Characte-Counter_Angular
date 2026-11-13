@@ -4,8 +4,9 @@ import { debugLog } from '../../debug';
 import { countCharacters, countSentences, countWords, formatCount } from '../../text-stats';
 
 /**
- * The three coloured cards: characters, words and sentences.
- * @Input text / excludeSpaces: read-only data from AppComponent. Display only, no outputs.
+ * CHILD of AppComponent: the three coloured cards (characters, words, sentences).
+ * Receives (@Input): text, excludeSpaces, read-only data from the parent.
+ * Sends: nothing. It only displays data, so it has no @Output.
  */
 @Component({
   selector: 'app-stats-cards',

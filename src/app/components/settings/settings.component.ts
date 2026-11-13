@@ -9,10 +9,10 @@ import {
 } from '@angular/core';
 
 /**
- * "Exclude Spaces", "Set Character Limit", the limit field and the reading time.
- * @Input excludeSpaces / limitEnabled / limit / readingTime: state from AppComponent.
- * @Output excludeSpacesChange / limitEnabledChange / limitChange: report what the user
- * did; the parent updates its state and the new values come back down as inputs.
+ * CHILD of AppComponent: "Exclude Spaces", "Set Character Limit", the limit field and the reading time.
+ * Receives (@Input): excludeSpaces, limitEnabled, limit, readingTime from the parent.
+ * Sends (@Output): excludeSpacesChange, limitEnabledChange, limitChange to report what the
+ * user did; the parent updates its state and the new values come back down as inputs.
  */
 @Component({
   selector: 'app-settings',

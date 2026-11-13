@@ -6,9 +6,10 @@ import { LetterCount, getLetterDensity } from '../../text-stats';
 const LETTERS_SHOWN = 5;
 
 /**
- * Letter frequency bars with a "See more / See less" toggle.
- * @Input text: read-only data from AppComponent. Whether the full list is
- * expanded is purely local UI state, so it stays inside this component.
+ * CHILD of AppComponent: letter frequency bars with a "See more / See less" toggle.
+ * Receives (@Input): text, read-only data from the parent.
+ * Sends: nothing. Whether the full list is expanded (showAll) only matters
+ * inside this component, so it stays here instead of in the parent.
  */
 @Component({
   selector: 'app-letter-density',

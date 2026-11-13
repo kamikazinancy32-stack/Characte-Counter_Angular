@@ -3,9 +3,9 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 export type Theme = 'dark' | 'light';
 
 /**
- * Logo plus theme toggle.
- * @Input theme: the current theme, owned by AppComponent.
- * @Output themeToggle: asks the parent to switch theme; this component never switches it itself.
+ * CHILD of AppComponent: logo plus theme toggle button.
+ * Receives (@Input): theme, the current theme owned by the parent.
+ * Sends (@Output): themeToggle, asks the parent to switch theme; this component never switches it itself.
  */
 @Component({
   selector: 'app-header',

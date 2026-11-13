@@ -4,9 +4,9 @@ import { debugLog } from '../../debug';
 import { countCharacters } from '../../text-stats';
 
 /**
- * The textarea and the "limit reached" warning.
- * @Input text / limit / limitEnabled / excludeSpaces: state owned by AppComponent.
- * @Output textChange: emits the new text on every keystroke; the parent stores it
+ * CHILD of AppComponent: the textarea and the "limit reached" warning.
+ * Receives (@Input): text, limit, limitEnabled, excludeSpaces, all owned by the parent.
+ * Sends (@Output): textChange, the new text on every keystroke; the parent stores it
  * and passes it back down through [text].
  */
 @Component({
