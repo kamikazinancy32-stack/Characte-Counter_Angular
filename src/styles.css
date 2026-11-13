@@ -77,7 +77,6 @@ textarea {
 button {
   border: none;
   background: none;
-  cursor: pointer;
 }
 
 /* ---------- Cursors ---------- */
@@ -85,27 +84,17 @@ button {
 a[href],
 button,
 label,
-select,
-summary,
-[role="button"],
-input[type="checkbox"],
-input[type="radio"] {
+input[type="checkbox"] {
   cursor: pointer;
 }
 
 textarea,
-input[type="text"],
-input[type="number"],
-input[type="search"],
-input[type="email"] {
+input[type="number"] {
   cursor: text;
 }
 
-button:disabled,
-input:disabled,
-textarea:disabled,
-[aria-disabled="true"],
-label:has(:disabled) {
+/* The limit field when "Set Character Limit" is off. */
+input:disabled {
   cursor: not-allowed;
 }
 
