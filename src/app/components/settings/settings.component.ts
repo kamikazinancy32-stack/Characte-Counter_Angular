@@ -1,11 +1,9 @@
 import {
   Component,
-  ElementRef,
   EventEmitter,
   Injector,
   Input,
   Output,
-  ViewChild,
   afterNextRender,
   inject,
 } from '@angular/core';
@@ -31,21 +29,22 @@ export class SettingsComponent {
   @Output() limitEnabledChange = new EventEmitter<boolean>();
   @Output() limitChange = new EventEmitter<number | null>();
 
-  @ViewChild('limitInput') private limitInput?: ElementRef<HTMLInputElement>;
+  // afterNextRender (used below) needs an injector when it is called from an event handler.
   private injector = inject(Injector);
 
   onExcludeSpacesChange(event: Event): void {
     this.excludeSpacesChange.emit((event.target as HTMLInputElement).checked);
   }
 
-  onLimitEnabledChange(event: Event): void {
+  /** limitInput is the number field, passed in from the template (#limitInput). */
+  onLimitEnabledChange(event: Event, limitInput: HTMLInputElement): void {
     const enabled = (event.target as HTMLInputElement).checked;
     this.limitEnabledChange.emit(enabled);
 
     if (enabled) {
-      // The field only becomes enabled once the parent's new state has rendered,
-      // so wait for that render before moving focus into it (as the reference does).
-      afterNextRender(() => this.limitInput?.nativeElement.focus(), { injector: this.injector });
+      // The field is still disabled until Angular re-renders with the parent's new state,
+      // so wait for that render, then move the keyboard focus into the field.
+      afterNextRender(() => limitInput.focus(), { injector: this.injector });
     }
   }
 
