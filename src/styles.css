@@ -88,11 +88,6 @@ input[type="checkbox"] {
   cursor: pointer;
 }
 
-textarea,
-input[type="number"] {
-  cursor: text;
-}
-
 /* The limit field when "Set Character Limit" is off. */
 input:disabled {
   cursor: not-allowed;
