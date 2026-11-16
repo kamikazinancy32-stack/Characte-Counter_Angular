@@ -20,6 +20,11 @@ textarea::placeholder {
   opacity: 1;
 }
 
+/* Hover comes before :focus and the warning rule so those colours win. */
+textarea:hover {
+  border-color: var(--purple-500);
+}
+
 textarea:focus {
   outline: 2px solid transparent; /* stays visible in Windows high-contrast mode */
   border-color: var(--purple-500);
