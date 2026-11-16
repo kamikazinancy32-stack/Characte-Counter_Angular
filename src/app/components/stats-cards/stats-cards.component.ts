@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 import { debugLog } from '../../debug';
-import { countCharacters, countSentences, countWords, formatCount } from '../../text-stats';
+import { countCharacters, countWords } from '../../text-stats';
 
 /**
  * CHILD of AppComponent: the three coloured cards (characters, words, sentences).
@@ -20,9 +20,10 @@ export class StatsCardsComponent implements OnChanges {
   @Input({ required: true }) text = '';
   @Input() excludeSpaces = false;
 
-  characterCount = formatCount(0);
-  wordCount = formatCount(0);
-  sentenceCount = formatCount(0);
+  // Shown with two digits, like the design ("07").
+  characterCount = '00';
+  wordCount = '00';
+  sentenceCount = '00';
 
   /**
    * Recalculates only what depends on the inputs that changed:
@@ -33,12 +34,24 @@ export class StatsCardsComponent implements OnChanges {
     debugLog('[StatsCards] ngOnChanges: ' + Object.keys(changes).join(', '));
 
     if (changes['text'] || changes['excludeSpaces']) {
-      this.characterCount = formatCount(countCharacters(this.text, this.excludeSpaces));
+      this.characterCount = this.formatCount(countCharacters(this.text, this.excludeSpaces));
     }
 
     if (changes['text']) {
-      this.wordCount = formatCount(countWords(this.text));
-      this.sentenceCount = formatCount(countSentences(this.text));
+      this.wordCount = this.formatCount(countWords(this.text));
+      this.sentenceCount = this.formatCount(this.countSentences());
     }
+  }
+
+  /** Counts sentences by counting groups of ending punctuation (".", "!", "?", "…"). */
+  private countSentences(): number {
+    // [.!?…]+ matches one or more ending marks in a row, so "Wait..." counts once.
+    const endings = this.text.match(/[.!?…]+/g);
+    return endings ? endings.length : 0;
+  }
+
+  /** Pads a count to at least two digits ("7" -> "07"), as on the design's cards. */
+  private formatCount(count: number): string {
+    return String(count).padStart(2, '0');
   }
 }

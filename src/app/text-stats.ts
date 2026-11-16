@@ -5,11 +5,6 @@
 
 const WORDS_PER_MINUTE = 200;
 
-/** Pads a count to at least two digits ("7" -> "07"), as on the design's cards. */
-export function formatCount(count: number): string {
-  return String(count).padStart(2, '0');
-}
-
 /** Counts every character, or only non-space characters when spaces are excluded. */
 export function countCharacters(text: string, excludeSpaces: boolean): number {
   if (excludeSpaces) {
@@ -25,13 +20,6 @@ export function countWords(text: string): number {
   // that appear when the text starts or ends with a space.
   const pieces = text.split(/\s+/);
   return pieces.filter((word) => word !== '').length;
-}
-
-/** Counts sentences by counting groups of ending punctuation (".", "!", "?", "…"). */
-export function countSentences(text: string): number {
-  // [.!?…]+ matches one or more ending marks in a row, so "Wait..." counts once.
-  const endings = text.match(/[.!?…]+/g);
-  return endings ? endings.length : 0;
 }
 
 /** Approximate reading time at 200 words per minute. */
