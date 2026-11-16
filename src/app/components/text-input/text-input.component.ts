@@ -41,7 +41,13 @@ export class TextInputComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     debugLog('[TextInput] ngOnChanges: ' + Object.keys(changes).join(', '));
 
-    this.isOverLimit = this.exceedsLimit();
+    // Only check when the limit is switched on and is a positive number.
+    if (this.limitEnabled && this.limit !== null && this.limit > 0) {
+      this.isOverLimit = countCharacters(this.text, this.excludeSpaces) > this.limit;
+    } else {
+      this.isOverLimit = false;
+    }
+
     this.warningMessage = this.isOverLimit
       ? `Limit reached! Your text exceeds ${this.limit} characters.`
       : '';
@@ -49,13 +55,5 @@ export class TextInputComponent implements OnChanges {
 
   onInput(event: Event): void {
     this.textChange.emit((event.target as HTMLTextAreaElement).value);
-  }
-
-  private exceedsLimit(): boolean {
-    // No warning when the limit is off, empty, or not a positive number.
-    if (!this.limitEnabled || this.limit === null || this.limit <= 0) {
-      return false;
-    }
-    return countCharacters(this.text, this.excludeSpaces) > this.limit;
   }
 }
