@@ -5,14 +5,6 @@
 
 const WORDS_PER_MINUTE = 200;
 
-/** One row of the letter density list. */
-export interface LetterCount {
-  letter: string;
-  count: number;
-  /** Share of all letters, e.g. "12.50". */
-  percentage: string;
-}
-
 /** Pads a count to at least two digits ("7" -> "07"), as on the design's cards. */
 export function formatCount(count: number): string {
   return String(count).padStart(2, '0');
@@ -57,28 +49,4 @@ export function formatReadingTime(words: number): string {
     return '1 minute';
   }
   return `${minutes} minutes`;
-}
-
-/** Counts each letter A-Z (upper and lower case together), most frequent first. */
-export function getLetterDensity(text: string): LetterCount[] {
-  const counts: Record<string, number> = {};
-  let totalLetters = 0;
-
-  for (const character of text.toUpperCase()) {
-    // Skip anything that is not a letter A-Z (spaces, digits, punctuation...).
-    if (/[A-Z]/.test(character)) {
-      counts[character] = (counts[character] || 0) + 1;
-      totalLetters++;
-    }
-  }
-
-  const result: LetterCount[] = [];
-  for (const letter in counts) {
-    const percentage = (counts[letter] / totalLetters) * 100;
-    result.push({ letter, count: counts[letter], percentage: percentage.toFixed(2) });
-  }
-
-  // Sort from the highest count to the lowest.
-  result.sort((a, b) => b.count - a.count);
-  return result;
 }

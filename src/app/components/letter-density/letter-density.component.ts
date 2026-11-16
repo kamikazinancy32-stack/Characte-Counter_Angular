@@ -8,9 +8,16 @@ import {
 } from '@angular/core';
 
 import { debugLog } from '../../debug';
-import { LetterCount, getLetterDensity } from '../../text-stats';
 
 const LETTERS_SHOWN = 5;
+
+/** One row of the letter density list. */
+interface LetterCount {
+  letter: string;
+  count: number;
+  /** Share of all letters, e.g. "12.50". */
+  percentage: string;
+}
 
 /**
  * CHILD of AppComponent: letter frequency bars with a "See more / See less" toggle.
@@ -64,7 +71,27 @@ export class LetterDensityComponent implements OnInit, OnChanges {
     this.showAll = !this.showAll;
   }
 
+  /** Counts each letter A-Z (upper and lower case together), most frequent first. */
   private updateDensity(): void {
-    this.letterCounts = getLetterDensity(this.text);
+    const counts: Record<string, number> = {};
+    let totalLetters = 0;
+
+    for (const character of this.text.toUpperCase()) {
+      // Skip anything that is not a letter A-Z (spaces, digits, punctuation...).
+      if (/[A-Z]/.test(character)) {
+        counts[character] = (counts[character] || 0) + 1;
+        totalLetters++;
+      }
+    }
+
+    const result: LetterCount[] = [];
+    for (const letter in counts) {
+      const percentage = (counts[letter] / totalLetters) * 100;
+      result.push({ letter, count: counts[letter], percentage: percentage.toFixed(2) });
+    }
+
+    // Sort from the highest count to the lowest.
+    result.sort((a, b) => b.count - a.count);
+    this.letterCounts = result;
   }
 }
