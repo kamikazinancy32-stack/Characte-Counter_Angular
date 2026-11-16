@@ -138,7 +138,7 @@ src/
 ├── styles.css                 design tokens, light/dark theme variables, base rules
 └── app/
     ├── app.component.*        parent: state, event handlers, theme hooks
-    ├── text-stats.ts          pure counting functions (characters, words, sentences, reading time, density)
+    ├── text-stats.ts          countCharacters and countWords (used by more than one component)
     ├── debug.ts               DEBUG flag and lifecycle logger
     └── components/
         ├── header/
