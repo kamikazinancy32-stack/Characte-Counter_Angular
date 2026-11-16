@@ -16,7 +16,9 @@ parent–child communication and lifecycle hooks for every calculation.
 - Light and dark themes: the first visit follows the OS setting (`prefers-color-scheme`);
   a manual choice is saved in `localStorage`
 - Responsive layout (mobile < 768px, tablet, desktop up to 990px wide)
-- Accessible: keyboard navigable, visible `:focus-visible` outlines, labelled controls,
+- Hover states on every interactive element: logo, theme toggle, textarea, checkboxes,
+  limit field and See more
+- Accessible: keyboard only (Tab to move, Space/Enter to use), visible `:focus-visible` outlines, labelled controls,
   `aria-live="polite"` on the warning, stats and reading time, `aria-pressed` on the theme
   toggle, `aria-expanded` on See more
 
