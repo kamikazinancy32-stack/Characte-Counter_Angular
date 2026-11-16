@@ -42,6 +42,12 @@
   background: var(--purple-400) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m4.5 8.2 2.3 2.3 4.7-4.9' fill='none' stroke='%2312131a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px no-repeat;
 }
 
+/* After the :checked rule so a ticked box also changes on hover.
+   Hovering the label text highlights its box too. */
+.checkbox:hover input {
+  border-color: var(--purple-500);
+}
+
 .limit-input {
   width: 55px;
   height: 29px;
@@ -51,6 +57,11 @@
   background: transparent;
   text-align: center;
   appearance: textfield;
+}
+
+/* No hover effect while the field is disabled. */
+.limit-input:enabled:hover {
+  border-color: var(--purple-500);
 }
 
 .limit-input:disabled {
