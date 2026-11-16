@@ -6,9 +6,10 @@ import { SettingsComponent } from './components/settings/settings.component';
 import { StatsCardsComponent } from './components/stats-cards/stats-cards.component';
 import { TextInputComponent } from './components/text-input/text-input.component';
 import { debugLog } from './debug';
-import { countWords, formatReadingTime } from './text-stats';
+import { countWords } from './text-stats';
 
 const THEME_STORAGE_KEY = 'character-counter-theme';
+const WORDS_PER_MINUTE = 200;
 
 /**
  * PARENT component: the single source of truth for the whole app.
@@ -38,9 +39,21 @@ export class AppComponent implements OnInit, OnDestroy {
   limit: number | null = null;
   theme: Theme = 'dark';
 
-  /** Derived from text, so it is computed rather than stored. */
+  /** Approximate reading time at 200 words per minute. Derived from text, so it is not stored. */
   get readingTime(): string {
-    return formatReadingTime(countWords(this.text));
+    const words = countWords(this.text);
+    if (words === 0) {
+      return '0 minute';
+    }
+
+    const minutes = Math.round(words / WORDS_PER_MINUTE);
+    if (minutes < 1) {
+      return '<1 minute';
+    }
+    if (minutes === 1) {
+      return '1 minute';
+    }
+    return `${minutes} minutes`;
   }
 
   /** Tells us whether the operating system is set to light mode. */

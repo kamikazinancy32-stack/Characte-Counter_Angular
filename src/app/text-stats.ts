@@ -1,9 +1,8 @@
 /**
- * Plain counting functions used by the components.
- * They only read their arguments and return a result (no side effects).
+ * Counting functions shared by more than one component, so they live in one place.
+ * countCharacters: TextInput (limit check) and StatsCards.
+ * countWords: StatsCards and AppComponent (reading time).
  */
-
-const WORDS_PER_MINUTE = 200;
 
 /** Counts every character, or only non-space characters when spaces are excluded. */
 export function countCharacters(text: string, excludeSpaces: boolean): number {
@@ -20,21 +19,4 @@ export function countWords(text: string): number {
   // that appear when the text starts or ends with a space.
   const pieces = text.split(/\s+/);
   return pieces.filter((word) => word !== '').length;
-}
-
-/** Approximate reading time at 200 words per minute. */
-export function formatReadingTime(words: number): string {
-  if (words === 0) {
-    return '0 minute';
-  }
-
-  const minutes = Math.round(words / WORDS_PER_MINUTE);
-
-  if (minutes < 1) {
-    return '<1 minute';
-  }
-  if (minutes === 1) {
-    return '1 minute';
-  }
-  return `${minutes} minutes`;
 }
