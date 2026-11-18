@@ -93,5 +93,11 @@ export class LetterDensityComponent implements OnInit, OnChanges {
     // Sort from the highest count to the lowest.
     result.sort((a, b) => b.count - a.count);
     this.letterCounts = result;
+
+    // When the list is short again the button is hidden, so close the list too.
+    // Otherwise it would come back already expanded, showing "See less".
+    if (!this.canExpand) {
+      this.showAll = false;
+    }
   }
 }
