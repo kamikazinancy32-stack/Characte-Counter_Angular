@@ -46,3 +46,6 @@ Thumbs.db
 # Vanilla JS design reference (local only, never commit)
 reference/
 Reference/
+
+# Local code reference (generated, never commit)
+all-code.md
