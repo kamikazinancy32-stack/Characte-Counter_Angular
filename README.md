@@ -1085,7 +1085,7 @@ The logs are written only in development (`isDevMode()`), so they do not appear 
 
 ---
 
-## 15. Questions I should be able to answer in my review
+## 15. Q&A
 
 Each answer is based on this project. The follow-ups check whether I understand the
 answer or have only memorised it.
