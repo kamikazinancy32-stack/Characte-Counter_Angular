@@ -1,9 +1,12 @@
+import { isDevMode } from '@angular/core';
+
 /**
- * Set to true to log every lifecycle hook to the browser console.
+ * Logs every lifecycle hook to the browser console while developing (ng serve).
  * Useful for showing change detection: type in the textarea and watch
  * which components receive ngOnChanges and which inputs changed.
+ * isDevMode() is false in a production build (ng build), so the logs are not shipped.
  */
-export const DEBUG = true;
+export const DEBUG = isDevMode();
 
 /** Writes a message to the console, but only when DEBUG is true. */
 export function debugLog(message: string): void {
